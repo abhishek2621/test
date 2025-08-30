@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieHub - Find Legal Movie Streams</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">MovieHub</div>
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="#">Movies</a>
+                <a href="#">TV Shows</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Discover Your Next Favorite Movie</h1>
+                <p>Find where to legally stream thousands of movies across all major platforms.</p>
+                
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search for movies...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                
+                <div class="categories" id="genre-list">
+                    <!-- Genres will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <main class="container">
+        <!-- Trending Movies -->
+        <h2 class="section-title">Trending Now</h2>
+        <div class="movies-grid" id="trending-movies">
+            <!-- Movies will be loaded dynamically -->
+        </div>
+        
+        <!-- Popular Movies -->
+        <h2 class="section-title">Popular Movies</h2>
+        <div class="movies-grid" id="popular-movies">
+            <!-- Movies will be loaded dynamically -->
+        </div>
+        
+        <!-- Where to Watch Section -->
+        <h2 class="section-title">Available On These Platforms</h2>
+        <div class="providers">
+            <img src="https://image.tmdb.org/t/p/original/wwemzKWzjKYJFfCeiB57q3r4Bcm.png" alt="Netflix" class="provider-logo">
+            <img src="https://image.tmdb.org/t/p/original/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.png" alt="Amazon Prime" class="provider-logo">
+            <img src="https://image.tmdb.org/t/p/original/dgPueyEdOwpQ10fjuhL2WYFQwQs.png" alt="Disney+" class="provider-logo">
+            <img src="https://image.tmdb.org/t/p/original/3J3LfCYoUH9kXcoBRLlqAt3QOWO.png" alt="HBO Max" class="provider-logo">
+            <img src="https://image.tmdb.org/t/p/original/giwM8XX4V2AQb9vsoN7yti82tKK.png" alt="Hulu" class="provider-logo">
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#">Movies</a>
+                <a href="#">TV Shows</a>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+            <p class="copyright">© 2023 MovieHub. All rights reserved. We do not host any videos or copyrighted content.</p>
+            <p class="attribution">Powered by TMDB API</p>
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Details | MovieHub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0e0e1b;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      color: white;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: #e50914;
+    }
+
+    .nav-links a {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .movie-detail-hero {
+      background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8));
+      padding: 3rem 0;
+    }
+
+    .movie-detail-container {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .movie-poster-large {
+      width: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .movie-info {
+      flex: 1;
+      color: white;
+    }
+
+    .movie-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .movie-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+
+    .tagline {
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .movie-overview {
+      line-height: 1.6;
+    }
+
+    .section-title {
+      color: #fff;
+      margin: 2rem 0 1rem;
+    }
+
+    .providers-container,
+    .cast-grid,
+    .similar-movies-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .cast-card,
+    .similar-movie-card {
+      background: #1a1a2e;
+      border-radius: 8px;
+      overflow: hidden;
+      width: 150px;
+    }
+
+    .cast-photo,
+    .similar-movie-poster {
+      width: 100%;
+      height: 225px;
+      object-fit: cover;
+    }
+
+    .cast-info,
+    .similar-movie-info {
+      padding: 0.5rem;
+      color: white;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: #e50914;
+      padding: 0.8rem 1.2rem;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 2rem;
+    }
+
+    .pagination-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .page-btn {
+      background: #1a1a2e;
+      color: white;
+      border: 2px solid #e50914;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      padding: 2rem 0;
+      text-align: center;
+      color: #aaa;
+      background: #1a1a2e;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="index.html" class="logo">MovieHub</a>
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Movies</a>
+        <a href="#">TV Shows</a>
+        <a href="#">About</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="movie-detail-hero">
+    <div class="container">
+      <div id="loader">Loading...</div>
+      <div id="movie-detail-content" style="display: none;"></div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="detail-section" id="providers-section" style="display: none;">
+      <h3 class="section-title">Where to Watch</h3>
+      <div class="providers-container" id="watch-providers"></div>
+    </div>
+
+    <div class="detail-section" id="cast-section" style="display: none;">
+      <h3 class="section-title">Top Cast</h3>
+      <div class="cast-grid" id="movie-cast"></div>
+    </div>
+
+    <div class="detail-section" id="similar-section" style="display: none;">
+      <h3 class="section-title">Similar Movies</h3>
+      <div class="similar-movies-container" id="similar-movies"></div>
+      <div class="pagination-controls">
+        <button class="page-btn" id="prev-page"><i class="fas fa-chevron-left"></i></button>
+        <span class="page-indicator" id="page-indicator">1/1</span>
+        <button class="page-btn" id="next-page"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2023 MovieHub. All rights reserved. Powered by TMDB API.</p>
+    </div>
+  </footer>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get("id");
+    const API_KEY = "8b6ee9a7d35760b1da11c57cc39d8a93";
+    const BASE_URL = "https://api.themoviedb.org/3";
+    const IMG_BASE_URL = "https://image.tmdb.org/t/p/w500";
+
+    const loader = document.getElementById("loader");
+    const movieContent = document.getElementById("movie-detail-content");
+    const providersSection = document.getElementById("providers-section");
+    const castSection = document.getElementById("cast-section");
+    const similarSection = document.getElementById("similar-section");
+
+    // Pagination variables
+    let currentPage = 1;
+    const itemsPerPage = 4;
+    let similarMoviesData = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (movieId) {
+        fetchMovieDetails(movieId);
+        fetchMovieCredits(movieId);
+        fetchWatchProviders(movieId);
+        fetchSimilarMovies(movieId);
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    async function fetchMovieDetails(id) {
+      loader.style.display = "block";
+      try {
+        const res = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}`);
+        const movie = await res.json();
+        movieContent.innerHTML = `
+          <div class="movie-detail-container">
+            <img src="${IMG_BASE_URL}${movie.poster_path}" class="movie-poster-large" alt="${movie.title}">
+            <div class="movie-info">
+              <h1 class="movie-title">${movie.title} (${movie.release_date.slice(0,4)})</h1>
+              <div class="movie-meta">
+                <span>${movie.runtime} min</span>
+                <span>⭐ ${movie.vote_average.toFixed(1)}</span>
+                <span>${movie.genres.map(g => g.name).join(", ")}</span>
+              </div>
+              ${movie.tagline ? `<p class="tagline">"${movie.tagline}"</p>` : ""}
+              <p class="movie-overview">${movie.overview || "No overview available."}</p>
+              ${movie.homepage ? `<a href="${movie.homepage}" class="back-btn" target="_blank" style="background: #333;"><i class="fas fa-globe"></i> Official Site</a>` : ""}
+            </div>
+          </div>`;
+        loader.style.display = "none";
+        movieContent.style.display = "block";
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function fetchMovieCredits(id) {
+      try {
+        const res = await fetch(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`);
+        const data = await res.json();
+        const castContainer = document.getElementById("movie-cast");
+        data.cast.slice(0, 12).forEach(actor => {
+          castContainer.innerHTML += `
+            <div class="cast-card">
+              <img src="${actor.profile_path ? IMG_BASE_URL + actor.profile_path : 'https://via.placeholder.com/150x225?text=No+Image'}" class="cast-photo">
+              <div class="cast-info">
+                <div class="cast-name">${actor.name}</div>
+                <div class="cast-character">${actor.character || "Unknown"}</div>
+              </div>
+            </div>`;
+        });
+        castSection.style.display = "block";
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function fetchWatchProviders(id) {
+      try {
+        const res = await fetch(`${BASE_URL}/movie/${id}/watch/providers?api_key=${API_KEY}`);
+        const data = await res.json();
+        const providers = data.results?.US?.flatrate || [];
+        const providersContainer = document.getElementById("watch-providers");
+        if (providers.length > 0) {
+          providers.forEach(provider => {
+            providersContainer.innerHTML += `<img src="${IMG_BASE_URL}${provider.logo_path}" class="provider-logo" title="${provider.provider_name}" style="height: 45px;">`;
+          });
+        } else {
+          providersContainer.innerHTML = "<p>No providers available.</p>";
+        }
+        providersSection.style.display = "block";
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function fetchSimilarMovies(id) {
+      try {
+        const res = await fetch(`${BASE_URL}/movie/${id}/similar?api_key=${API_KEY}`);
+        const data = await res.json();
+        similarMoviesData = data.results.filter(m => m.poster_path);
+        renderSimilarMovies();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderSimilarMovies() {
+      const container = document.getElementById("similar-movies");
+      const indicator = document.getElementById("page-indicator");
+      const totalPages = Math.ceil(similarMoviesData.length / itemsPerPage);
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+
+      container.innerHTML = "";
+      similarMoviesData.slice(start, end).forEach(movie => {
+        container.innerHTML += `
+          <div class="similar-movie-card" onclick="window.location.href='movie-details.html?id=${movie.id}'">
+            <img src="${IMG_BASE_URL}${movie.poster_path}" class="similar-movie-poster" />
+            <div class="similar-movie-info">
+              <div class="similar-movie-title">${movie.title}</div>
+              <div class="similar-movie-meta">
+                <span>${movie.release_date?.slice(0, 4) || "N/A"}</span>
+                <span>⭐ ${movie.vote_average?.toFixed(1) || "N/A"}</span>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      document.getElementById("prev-page").disabled = currentPage === 1;
+      document.getElementById("next-page").disabled = currentPage === totalPages;
+      indicator.textContent = `${currentPage}/${totalPages}`;
+      similarSection.style.display = "block";
+    }
+
+    document.getElementById("prev-page").addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderSimilarMovies();
+      }
+    });
+
+    document.getElementById("next-page").addEventListener("click", () => {
+      const totalPages = Math.ceil(similarMoviesData.length / itemsPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderSimilarMovies();
+      }
+    });
+  </script>
+</body>
+</html>
